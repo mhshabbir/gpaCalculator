@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPA Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-width: 100%;
+        }
+        .calculator h2 {
+            margin: 0 0 20px;
+            color: #4A148C;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4A148C;
+            color: #fff;
+        }
+        .buttons {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .buttons .calculate {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        .buttons .reset {
+            background-color: #f44336;
+            color: #fff;
+        }
+        .gpa-result {
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.5em;
+            color: #4A148C;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>GPA Calculator</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Course</th>
+                    <th>Grade</th>
+                    <th>Credits</th>
+                </tr>
+            </thead>
+            <tbody id="course-table">
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td><input type="text" placeholder="Course #1"></td>
+                    <td><input type="text" placeholder="Grade"></td>
+                    <td><input type="number" placeholder="Credits"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="buttons">
+            <button onclick="addRow()">+ Add Row</button>
+            <button class="calculate" onclick="calculateGPA()">Calculate GPA</button>
+            <button class="reset" onclick="resetTable()">Reset</button>
+        </div>
+        <div class="gpa-result" id="gpa-result">GPA: 0.00</div>
+    </div>
+
+    <script>
+        function addRow() {
+            const table = document.getElementById('course-table');
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td><input type="checkbox"></td>
+                <td><input type="text" placeholder="Course"></td>
+                <td><input type="text" placeholder="Grade"></td>
+                <td><input type="number" placeholder="Credits"></td>
+            `;
+        }
+
+        function calculateGPA() {
+            const rows = document.querySelectorAll('#course-table tr');
+            let totalCredits = 0;
+            let totalPoints = 0;
+            rows.forEach(row => {
+                const grade = row.cells[2].children[0].value.toUpperCase();
+                const credits = parseFloat(row.cells[3].children[0].value);
+                let points = 0;
+                switch (grade) {
+                    case 'A':
+                        points = 4.0;
+                        break;
+                    case 'B':
+                        points = 3.0;
+                        break;
+                    case 'C':
+                        points = 2.0;
+                        break;
+                    case 'D':
+                        points = 1.0;
+                        break;
+                    case 'F':
+                        points = 0.0;
+                        break;
+                    default:
+                        points = 0.0;
+                }
+                if (!isNaN(credits)) {
+                    totalCredits += credits;
+                    totalPoints += points * credits;
+                }
+            });
+            const gpa = totalPoints / totalCredits;
+            document.getElementById('gpa-result').innerText = `GPA: ${isNaN(gpa) ? 0.00 : gpa.toFixed(2)}`;
+        }
+
+        function resetTable() {
+            const table = document.getElementById('course-table');
+            table.innerHTML = `
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td><input type="text" placeholder="Course #1"></td>
+                    <td><input type="text" placeholder="Grade"></td>
+                    <td><input type="number" placeholder="Credits"></td>
+                </tr>
+            `;
+            document.getElementById('gpa-result').innerText = 'GPA: 0.00';
+        }
+    </script>
+</body>
+</html>
